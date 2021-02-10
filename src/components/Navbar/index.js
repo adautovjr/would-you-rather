@@ -12,10 +12,11 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     list: {
-      width: 250,
+        width: 250,
     },
     menuButton: {
         marginRight: theme.spacing(2),
+        color: "#333"
     },
     title: {
         flexGrow: 1,
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
     link: {
         textDecoration: "none",
-        color: "white"
+        color: "#333"
     },
     drawerLink : {
         textDecoration: "none",

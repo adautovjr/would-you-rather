@@ -1,26 +1,28 @@
 import { Card, CardContent, Grid } from '@material-ui/core';
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { connect } from 'react-redux';
-import { Author, Options, Option } from '../Styles';
+import { Author} from '../Styles';
+import { formatAnswer } from "../../utils/helpers";
+import Options from "./Options";
 
 class Question extends Component {
     render() {
-        console.log(this.props);
+        const { authedUser, question } = this.props;
+        const answer = formatAnswer(authedUser, question);
+        console.log("question", question);
+        console.log("answer", answer);
         return (
             <Card>
                 <CardContent>
                     <Grid container className="question">
                         <Grid item xs={4}>
                             <Author>
-                                <img alt={this.props.question.author.name} src={this.props.question.author.avatarURL} />
-                                <div>{this.props.question.author.name}</div>
+                                <img alt={question.author.name} src={question.author.avatarURL} />
+                                <div>{question.author.name}</div>
                             </Author>
                         </Grid>
                         <Grid item xs={8}>
-                            <Options column>
-                                <Option left>{this.props.question.optionOne.text}</Option>
-                                <Option right>{this.props.question.optionTwo.text}</Option>
-                            </Options>
+                            <Options question={question} answer={answer} />
                         </Grid>
                     </Grid>
                 </CardContent>
