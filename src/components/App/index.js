@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { connect } from 'react-redux';
-import { handleInitialData } from "../../actions/shared";
+import { ConnectedRouter } from 'connected-react-router';
+import { withRouter } from 'react-router';
 import QuestionsList from "../QuestionsList";
+import QuestionDetails from "../QuestionDetails";
+import QuestionSubmit from "../QuestionSubmit";
+import Leaderboard from "../Leaderboard";
 import AppContainer from "../AppContainer";
+import { history } from '../../middleware';
+import { handleInitialData } from "../../actions/shared";
 
 class App extends Component {
     componentDidMount() {
@@ -12,17 +18,21 @@ class App extends Component {
 
     render() {
         return (
-            <Router>
-                <AppContainer>
-                    {this.props.loading === true
-                        ? null
-                        : <div>
-                            <Route path="/" exact component={QuestionsList} />
-                            <Route path="/teste" exact component={() => <div> teste </div>} />
-                        </div>
-                    }
-                </AppContainer>
-            </Router>
+            <ConnectedRouter history={history}>
+                <Router>
+                    <AppContainer>
+                        {this.props.loading === true
+                            ? null
+                            : <Switch>
+                                <Route path="/" exact component={withRouter(QuestionsList)} />
+                                <Route path="/add" component={withRouter(QuestionSubmit)} />
+                                <Route path="/leaderboard" component={withRouter(Leaderboard)} />
+                                <Route path="/question/:id" component={withRouter(QuestionDetails)} />
+                            </Switch>
+                        }
+                    </AppContainer>
+                </Router>
+            </ConnectedRouter>
         );
     }
 }

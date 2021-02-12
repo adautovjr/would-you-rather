@@ -1,32 +1,148 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import Question from "../Question";
-import { Container, Grid, CssBaseline } from '@material-ui/core';
+import { Container, Grid, CssBaseline, Tabs, Tab, Box, Typography } from '@material-ui/core';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Hoverable } from "../Styles";
+import { go, push } from 'connected-react-router';
 
-class QuestionsList extends Component {
-    render () {
-        return (
-            <Container maxWidth="xl">
-                <Grid container spacing={3}>
-                    <CssBaseline />
-                    {this.props.questionIds.map(questionId => (
-                        <Grid xs={4} item key={questionId}>
-                            <Hoverable>
-                                <Question id={questionId} />
-                            </Hoverable>
-                        </Grid>
-                    ))}
-                </Grid>
-            </Container>
-        );
-    }
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`nav-tabpanel-${index}`}
+            aria-labelledby={`nav-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box p={3}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
 }
 
-function mapStateToProps({ questions }) {
+const AntTabs = withStyles({
+    root: {
+        borderBottom: '1px solid #e8e8e8',
+    },
+    indicator: {
+        backgroundColor: '#1890ff',
+    },
+})(Tabs);
+
+const AntTab = withStyles((theme) => ({
+    root: {
+        textTransform: 'none',
+        minWidth: 72,
+        fontWeight: theme.typography.fontWeightRegular,
+        marginRight: theme.spacing(4),
+        fontFamily: [
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ].join(','),
+        '&:hover': {
+            color: '#40a9ff',
+            opacity: 1,
+        },
+        '&$selected': {
+            color: '#1890ff',
+            fontWeight: theme.typography.fontWeightMedium,
+        },
+        '&:focus': {
+            color: '#40a9ff',
+        },
+    },
+    selected: {},
+}))((props) => <Tab disableRipple {...props} />);
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+    },
+    padding: {
+        padding: theme.spacing(3),
+    },
+    demo1: {
+        backgroundColor: theme.palette.background.paper,
+    },
+    demo2: {
+        backgroundColor: '#2e1534',
+    },
+}));
+
+function QuestionsList({ dispatch, answeredQuestionIds, unansweredQuestionIds }) {
+    const classes = useStyles();
+    const [value, setValue] = React.useState(0);
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+    const checkQuestion = (questionId) => {
+        dispatch(push(`/question/${questionId}`))
+        dispatch(go(`/question/${questionId}`))
+    };
+
+    return (
+        <Container maxWidth="xl">
+            <div className={classes.root}>
+                <CssBaseline />
+                <AntTabs value={value} onChange={handleChange}>
+                    <AntTab label="Unanswered" />
+                    <AntTab label="Answered" />
+                </AntTabs>
+                <TabPanel value={value} index={0}>
+                    <Grid container spacing={3}>
+                        {unansweredQuestionIds.map(questionId => (
+                            <Grid onClick={() => checkQuestion(questionId)} xs={4} item key={questionId}>
+                                <Hoverable>
+                                    <Question column id={questionId} />
+                                </Hoverable>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                    <Grid container spacing={3}>
+                        {answeredQuestionIds.map(questionId => (
+                            <Grid onClick={() => checkQuestion(questionId)} xs={4} item key={questionId}>
+                                <Hoverable>
+                                    <Question column id={questionId} />
+                                </Hoverable>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </TabPanel>
+            </div>
+        </Container >
+    );
+}
+
+function mapStateToProps({ authedUser, questions }) {
+    let answered = {}, unanswered = {};
+    Object.values(questions).map(question =>
+        (question.optionOne.votes.includes(authedUser) || question.optionTwo.votes.includes(authedUser))
+        ? answered[question.id] = question
+        : unanswered[question.id] = question
+    );
     return {
-        questionIds: Object.keys(questions)
-            .sort((a,b) => questions[b].timestamp - questions[a].timestamp)
+        answeredQuestionIds: Object.keys(answered)
+            .sort((a, b) => answered[b].timestamp - answered[a].timestamp),
+        unansweredQuestionIds: Object.keys(unanswered)
+            .sort((a, b) => unanswered[b].timestamp - unanswered[a].timestamp)
     }
 }
 

@@ -1,4 +1,5 @@
-import { AppBar, Toolbar, IconButton, Button, SwipeableDrawer, List, ListItem, ListItemIcon, ListItemText, Divider } from '@material-ui/core';
+import { connect } from 'react-redux';
+import { AppBar, Toolbar, IconButton, Button, SwipeableDrawer, List, ListItem, ListItemIcon, ListItemText, Divider, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -6,9 +7,13 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import menuItems from "./menuItems";
+import { Author } from '../Styles';
 
 const useStyles = makeStyles((theme) => ({
     root: {
+        flexGrow: 1,
+    },
+    grow: {
         flexGrow: 1,
     },
     list: {
@@ -28,21 +33,26 @@ const useStyles = makeStyles((theme) => ({
         textDecoration: "none",
         color: "#333"
     },
-    drawerLink : {
+    drawerLink: {
         textDecoration: "none",
         color: "#757575"
     },
     toolbar: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-      padding: theme.spacing(0, 1),
-      // necessary for content to be below app bar
-      ...theme.mixins.toolbar,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        padding: theme.spacing(0, 1),
+        // necessary for content to be below app bar
+        ...theme.mixins.toolbar,
+    },
+    username: {
+        marginRight: "5px",
+        color: "#333",
+        fontSize: "15px"
     }
 }));
 
-export default function Navbar() {
+function Navbar({ authedUser }) {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
@@ -67,8 +77,25 @@ export default function Navbar() {
                         Home
                     </Button>
                 </Link>
+                <div className={classes.grow} />
+                {
+                    authedUser.name !== undefined &&
+                    <>
+                        <Typography className={classes.username} variant="h6" noWrap>
+                            { `Hello, ${authedUser.name}` }
+                        </Typography>
+                        <Author icon>
+                            <img alt={authedUser.name} src={authedUser.avatarURL} />
+                        </Author>
+                        <Link edge="end" className={classes.link} to="/">
+                            <Button color="inherit">
+                                Logout
+                            </Button>
+                        </Link>
+                    </>
+                }
             </Toolbar>
-            <SwipeableDrawer disableBackdropTransition={!iOS} disableDiscovery={iOS}  anchor="left" open={open} onClose={handleDrawerClose}>
+            <SwipeableDrawer disableBackdropTransition={!iOS} disableDiscovery={iOS} anchor="left" open={open} onClose={handleDrawerClose}>
                 <div
                     className={classes.list}
                     role="presentation"
@@ -97,3 +124,14 @@ export default function Navbar() {
         </AppBar>
     );
 }
+
+function mapStateToProps({ authedUser, users }) {
+    return {
+        authedUser: {
+            ...users[authedUser],
+            avatarURL: users[authedUser] ? `/${users[authedUser].avatarURL}` : ""
+        }
+    }
+}
+
+export default connect(mapStateToProps)(Navbar);

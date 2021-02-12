@@ -8,16 +8,99 @@ export const Hoverable = styled.div`
     }
 `;
 
+export const LeaderboardCardStyle = styled.div`
+    cursor: default;
+    .card {
+        margin-bottom: 20px;
+    }
+    .info {
+        height: 100%;
+    }
+    .padding {
+        height: 100%;
+        padding: 10px;
+    }
+    .details{
+        display: flex;
+        flex-direction: column;
+        border: 2px solid #c8cdd266;
+        border-top: 0;
+        border-bottom: 0;
+        hr {
+            color: #c8cdd266;
+            border: 1px solid #c8cdd266;
+            height: 1px;
+            width: 100%;
+        }
+    }
+    .data {
+        display: flex;
+    }
+    .spacer {
+        flex-grow: 1;
+    }
+    .name {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .score {
+        display: flex;
+        padding-right: 0;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        .score-plaque {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border: 1px solid #c8cdd2;
+            border-radius: 5px;
+            .header {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #ccc;
+                border-bottom: 1px solid #c8cdd2;
+                padding: 5px;
+            }
+            .body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                .circle {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 80px;
+                    height: 80px;
+                    background-color: #00c4e3;
+                    border-radius: 50%;
+                    font-size: 40px;
+                    color: white;
+                }
+            }
+        }
+    }
+`;
+
 export const Author = styled.div`
-    margin-right: 20px;
+    margin: ${props => props.row ? "0 auto 50px" : (props.icon ? "0 10px 0" : "30px 40px 30px 30px")};
+    display: ${props => props.icon ? "flex" : "block"};
+    align-content: center;
+    div {
+        text-align: center;
+    }
     img {
-        max-width: 100%;
+        max-width: ${props => props.row ? "100px" : (props.icon ? "30px" : "100%")};
+        margin: auto;
         width: 100%;
         border: 1px solid transparent;
         border-radius: 50%;
     }
-    div {
-        text-align: center;
+    .would-you-rather {
+        font-size: 50px;
+        font-weight: bold;
+        width: 100%;
     }
 `;
 
@@ -32,42 +115,48 @@ export const OptionsContainer = styled.div`
     }
 `;
 
-export const Option = styled.div`
+export const Option = styled(Hoverable)`
     display: flex;
-    justify-content: center;
+    justify-content: ${props => (props.row && props.answered) ? "flex-start": "center"};
     align-items: center;
     flex-direction: column;
     width: 100%;
+    min-height: ${props => props.row ? "300px": "1px"};
     height: 100%;
     background-color: ${props => props.left ? "#00c4e3": (props.right ? "#ff5f53" : "#FFF")};
     position: relative;
-    padding: 10px 80px 10px 10px;
+    padding: ${props => props.row ? "20px": "10px 80px 10px 10px"};
     border-radius: 6px;
+    overflow: hidden;
+    :hover {
+        transform: ${props => props.row ? "translateY(-3px)" : "translateY(0px)"};
+    }
     .percentage {
-        font-size: 26px;
+        font-size: ${props => props.row ? "80px": "26px"};
         font-weight: bold;
         color: ${props => props.left ? "#3a8b98": (props.right ? "#c5574f" : "#FFF")};
         background-color: ${props => props.left ? "#00c4e3": (props.right ? "#ff5f53" : "#FFF")};
         text-shadow: ${props => props.left ? "#4ce7ff": (props.right ? "#f7a49d" : "#FFF")} 1px 1px 0;
-        position: absolute;
-        right: 5px;
+        position: ${props => props.row ? "unset": "absolute"};
+        right: ${props => props.row ? "inherit": "5px"};
         max-width: 100%;
     }
     .votes {
-        font-size: 10px;
+        font-size: ${props => props.row ? "25px": "10px"};
         color: #fff;
         background-color: ${props => props.left ? "#00c4e3": (props.right ? "#ff5f53" : "#FFF")};
         text-shadow: #7a7a7a 1px 2px 0;
-        align-self: flex-start;
+        align-self: ${props => props.row ? "center": "flex-start"};
     }
     .text {
-        font-size: 20px;
+        font-size: ${props => props.row ? "40px": "20px"};
         color: #fff;
         background-color: ${props => props.left ? "#00c4e3": (props.right ? "#ff5f53" : "#FFF")};
         text-shadow: #7a7a7a 1px 2px 0;
-        align-self: flex-start;
+        align-self: ${props => props.row ? "center": "flex-start"};
         text-transform: capitalize;
-        line-height: 23px;
+        line-height: ${props => props.row ? "40px": "23px"};
+        text-align: ${props => props.row ? "center": "left"}
     }
     .voted {
         font-size: 10px;
@@ -75,6 +164,22 @@ export const Option = styled.div`
         background-color: ${props => props.left ? "#00c4e3": (props.right ? "#ff5f53" : "#FFF")};
         text-shadow: #7a7a7a 1px 2px 0;
         position: absolute;
-        display: none;
+        top: -15px;
+        right: ${props => props.left ? "-60px": (props.right ? "unset" : "-60px")};
+        left: ${props => props.left ? "unset": (props.right ? "-60px" : "unset")};
+        width: 0;
+        height: 0;
+        border-left: 80px solid transparent;
+        border-right: 80px solid transparent;
+        border-bottom: ${props => `80px solid ${props.left ? "#3a8b98": (props.right ? "#c5574f" : "#3a8b98")}`};
+        transform: ${props => props.left ? "rotate(45deg)": (props.right ? "rotate(-45deg)" : "rotate(45deg)")};
+        svg {
+            width: 50px;
+            height: 50px;
+            position: relative;
+            top: 25px;
+            right: ${props => props.left ? "28px": (props.right ? "20px" : "28px")};
+            transform: ${props => props.left ? "rotate(-45deg)": (props.right ? "rotate(45deg)" : "rotate(-45deg)")};
+        }
     }
 `;

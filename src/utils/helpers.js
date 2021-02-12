@@ -1,4 +1,7 @@
 export function formatAnswer (user, question) {
+    if (question === undefined) {
+        return false;
+    }
     const isAnswered = question.optionOne.votes.includes(user) || question.optionTwo.votes.includes(user);
     const totalVotes = question.optionOne.votes.length + question.optionTwo.votes.length;
     return {
