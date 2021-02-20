@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
 import Question from "../Question";
 import { Container, Grid, CssBaseline, Tabs, Tab, Box, Typography } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Hoverable } from "../Styles";
-import { go, push } from 'connected-react-router';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -91,10 +91,7 @@ function QuestionsList({ dispatch, answeredQuestionIds, unansweredQuestionIds })
         setValue(newValue);
     };
 
-    const checkQuestion = (questionId) => {
-        dispatch(push(`/question/${questionId}`))
-        dispatch(go(`/question/${questionId}`))
-    };
+    const checkQuestion = (questionId) => dispatch(push(`/question/${questionId}`));
 
     return (
         <Container maxWidth="xl">

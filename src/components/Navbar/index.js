@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import menuItems from "./menuItems";
 import { Author } from '../Styles';
+import { logout } from '../../actions/shared';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function Navbar({ authedUser }) {
+function Navbar({ authedUser, dispatch }) {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
@@ -79,20 +80,25 @@ function Navbar({ authedUser }) {
                 </Link>
                 <div className={classes.grow} />
                 {
-                    authedUser.name !== undefined &&
-                    <>
-                        <Typography className={classes.username} variant="h6" noWrap>
-                            { `Hello, ${authedUser.name}` }
-                        </Typography>
-                        <Author icon>
-                            <img alt={authedUser.name} src={authedUser.avatarURL} />
-                        </Author>
-                        <Link edge="end" className={classes.link} to="/">
-                            <Button color="inherit">
+                    authedUser.name !== undefined
+                    ?   <>
+                            <Typography className={classes.username} variant="h6" noWrap>
+                                { `Hello, ${authedUser.name}` }
+                            </Typography>
+                            <Author icon>
+                                <img alt={authedUser.name} src={authedUser.avatarURL} />
+                            </Author>
+                            <Button edge="end" className={classes.link} color="inherit" onClick={() => dispatch(logout())}>
                                 Logout
                             </Button>
-                        </Link>
-                    </>
+                        </>
+                    :   <>
+                            <Link edge="end" className={classes.link} to="/login">
+                                <Button color="inherit">
+                                    Login
+                                </Button>
+                            </Link>
+                        </>
                 }
             </Toolbar>
             <SwipeableDrawer disableBackdropTransition={!iOS} disableDiscovery={iOS} anchor="left" open={open} onClose={handleDrawerClose}>

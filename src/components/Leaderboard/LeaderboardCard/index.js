@@ -3,7 +3,6 @@ import { Grid, Card, CardContent } from '@material-ui/core';
 import { Author, LeaderboardCardStyle } from "../../Styles";
 
 const LeaderboardCard = ({ user }) => {
-    console.log(user);
     return (
         <LeaderboardCardStyle>
             {
