@@ -101,7 +101,7 @@ function Navbar({ authedUser, dispatch }) {
                         </>
                 }
             </Toolbar>
-            <SwipeableDrawer disableBackdropTransition={!iOS} disableDiscovery={iOS} anchor="left" open={open} onClose={handleDrawerClose}>
+            <SwipeableDrawer disableBackdropTransition={!iOS} disableDiscovery={iOS} anchor="left" open={open} onOpen={handleDrawerOpen} onClose={handleDrawerClose}>
                 <div
                     className={classes.list}
                     role="presentation"

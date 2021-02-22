@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import Question from "../Question";
-import { Container, Grid, CssBaseline, Tabs, Tab, Box, Typography } from '@material-ui/core';
+import { Container, Grid, CssBaseline, Tabs, Tab, Box } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Hoverable } from "../Styles";
 
@@ -19,7 +19,7 @@ function TabPanel(props) {
         >
             {value === index && (
                 <Box p={3}>
-                    <Typography>{children}</Typography>
+                    {children}
                 </Box>
             )}
         </div>

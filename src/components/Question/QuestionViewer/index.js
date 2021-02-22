@@ -16,7 +16,7 @@ const QuestionViewer = ({ question, answer }) => {
                 </Author>
             </Grid>
             <Grid item xs={12}>
-                <Options row question={question} answer={answer} />
+                <Options row answer={answer} />
             </Grid>
         </Grid>
     );

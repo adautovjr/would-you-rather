@@ -15,7 +15,7 @@ const QuestionCard = ({ question, answer }) => {
                         </Author>
                     </Grid>
                     <Grid item xs={8}>
-                        <Options column question={question} answer={answer} />
+                        <Options column answer={answer} />
                     </Grid>
                 </Grid>
             </CardContent>

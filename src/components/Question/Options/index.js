@@ -1,8 +1,15 @@
 import React from 'react';
-import { OptionsContainer, Option } from '../../Styles';
+import { connect } from 'react-redux';
 import CheckIcon from '@material-ui/icons/Check';
+import { OptionsContainer, Option } from '../../Styles';
+import { vote } from '../../../actions/questions'
 
-const Options = ({ answer, row, column, builder }) => {
+const Options = ({ authedUser, answer, row, column, builder, dispatch, questions, users }) => {
+
+    const handleOptionClick = (option) => {
+        dispatch(vote({ authedUser, qid: answer.qid, answer: option, questions, users }));
+    }
+
     return (
         <OptionsContainer row={row || false} column={column || false}>
             {
@@ -45,12 +52,12 @@ const Options = ({ answer, row, column, builder }) => {
                                     </Option>
                                 </>
                                 : <>
-                                    <Option row={row || false} left>
+                                    <Option onClick={() => handleOptionClick("optionOne")} row={row || false} left>
                                         <div className="text">
                                             {answer.optionOne.text}
                                         </div>
                                     </Option>
-                                    <Option row={row || false} right>
+                                    <Option onClick={() => handleOptionClick("optionTwo")} row={row || false} right>
                                         <div className="text">
                                             {answer.optionTwo.text}
                                         </div>
@@ -75,4 +82,16 @@ const Options = ({ answer, row, column, builder }) => {
     );
 }
 
-export default Options;
+function mapStateToProps({ authedUser, questions, users }, { answer, row, column, builder }) {
+    return {
+        authedUser,
+        questions,
+        users,
+        answer,
+        row,
+        column,
+        builder
+    };
+}
+
+export default connect(mapStateToProps)(Options);
