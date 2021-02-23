@@ -1,14 +1,76 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import CheckIcon from '@material-ui/icons/Check';
-import { OptionsContainer, Option } from '../../Styles';
-import { vote } from '../../../actions/questions'
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Zoom from '@material-ui/core/Zoom';
+import Fab from '@material-ui/core/Fab';
+import { green } from '@material-ui/core/colors';
+import { OptionsContainer, Option, Limiter } from '../../Styles';
+import { vote, submitQuestion } from '../../../actions/questions';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        backgroundColor: theme.palette.background.paper,
+        width: 500,
+        position: 'relative',
+        minHeight: 200,
+    },
+    fab: {
+        position: 'absolute',
+        bottom: theme.spacing(2),
+        right: theme.spacing(2),
+        backgroundColor: green[500],
+        '&:hover': {
+          backgroundColor: green[600],
+        },
+    },
+    submitIcon: {
+        color: "white"
+    }
+}));
 
 const Options = ({ authedUser, answer, row, column, builder, dispatch, questions, users }) => {
+    const theme = useTheme();
+    const classes = useStyles();
+    const inputLimit = 40;
+
+    const [optionOne, setOptionOne] = React.useState("");
+    const [optionTwo, setOptionTwo] = React.useState("");
+    const [optionOneChars, setOptionOneChars] = React.useState(0);
+    const [optionTwoChars, setOptionTwoChars] = React.useState(0);
+    const [showSubmitButton, setShowSubmitButton] = React.useState(false);
+
+    const handleChangeOptionOne = (event) => {
+        if(inputLimit - event.target.value.length >= 0) {
+            setOptionOne(event.target.value);
+            setOptionOneChars(inputLimit - event.target.value.length);
+        }
+        setShowSubmitButton(optionTwo !== "" && event.target.value !== "");
+    };
+    const handleChangeOptionTwo = (event) => {
+        if(inputLimit - event.target.value.length >= 0) {
+            setOptionTwo(event.target.value);
+            setOptionTwoChars(inputLimit - event.target.value.length);
+        }
+        setShowSubmitButton(optionOne !== "" && event.target.value !== "");
+    };
+    const handleSubmitQuestion = (event) => {
+        const info = {
+            question: { author: authedUser, optionOne, optionTwo },
+            questions,
+            users
+        }
+        dispatch(submitQuestion(info));
+    };
 
     const handleOptionClick = (option) => {
         dispatch(vote({ authedUser, qid: answer.qid, answer: option, questions, users }));
     }
+
+    const transitionDuration = {
+        enter: theme.transitions.duration.enteringScreen,
+        exit: theme.transitions.duration.leavingScreen,
+    };
 
     return (
         <OptionsContainer row={row || false} column={column || false}>
@@ -19,7 +81,7 @@ const Options = ({ authedUser, answer, row, column, builder, dispatch, questions
                             answer.isAnswered
                                 ? <>
                                     <Option row={row || false} answered left>
-                                        {( row && answer.optionOne.userVoted ) &&
+                                        {(row && answer.optionOne.userVoted) &&
                                             <div className="voted">
                                                 <CheckIcon />
                                             </div>
@@ -35,7 +97,7 @@ const Options = ({ authedUser, answer, row, column, builder, dispatch, questions
                                         </div>
                                     </Option>
                                     <Option row={row || false} answered right>
-                                        {( row && answer.optionTwo.userVoted ) &&
+                                        {(row && answer.optionTwo.userVoted) &&
                                             <div className="voted">
                                                 <CheckIcon />
                                             </div>
@@ -68,14 +130,32 @@ const Options = ({ authedUser, answer, row, column, builder, dispatch, questions
                     : <>
                         <Option row left>
                             <div className="text">
-                                {`This`}
+                                <input autoFocus placeholder="This" value={optionOne} onChange={handleChangeOptionOne} />
                             </div>
+                            <Limiter chars={optionOneChars}>
+                                {optionOne !== "" ? optionOneChars : ""}
+                            </Limiter>
                         </Option>
                         <Option row right>
                             <div className="text">
-                                {`That`}
+                                <input placeholder="That" value={optionTwo} onChange={handleChangeOptionTwo} />
                             </div>
+                            <Limiter chars={optionTwoChars}>
+                                {optionTwo !== "" ? optionTwoChars : ""}
+                            </Limiter>
                         </Option>
+                        <Zoom
+                            in={showSubmitButton}
+                            timeout={transitionDuration}
+                            style={{
+                                transitionDelay: `${showSubmitButton ? transitionDuration.exit : 0}ms`,
+                            }}
+                            unmountOnExit
+                        >
+                            <Fab aria-label="Submit" className={classes.fab} color="inherit" onClick={handleSubmitQuestion}>
+                                <CheckIcon className={classes.submitIcon} />
+                            </Fab>
+                        </Zoom>
                     </>
             }
         </OptionsContainer>

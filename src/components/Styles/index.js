@@ -148,15 +148,28 @@ export const Option = styled(Hoverable)`
         text-shadow: #7a7a7a 1px 2px 0;
         align-self: ${props => props.row ? "center": "flex-start"};
     }
-    .text {
+    .text, .text input {
         font-size: ${props => props.row ? "40px": "20px"};
         color: #fff;
         background-color: ${props => props.left ? "#00c4e3": (props.right ? "#ff5f53" : "#FFF")};
         text-shadow: #7a7a7a 1px 2px 0;
         align-self: ${props => props.row ? "center": "flex-start"};
-        text-transform: capitalize;
         line-height: ${props => props.row ? "40px": "23px"};
-        text-align: ${props => props.row ? "center": "left"}
+        text-align: ${props => props.row ? "center": "left"};
+        border: none;
+        :focus {
+            outline: none;
+        }
+        ::placeholder,
+        ::-webkit-input-placeholder {
+            color: #dcdcdc;
+        }
+        ::first-letter {
+            text-transform: uppercase;
+        }
+    }
+    .text input {
+        line-height: 200px;
     }
     .voted {
         font-size: 10px;
@@ -182,6 +195,13 @@ export const Option = styled(Hoverable)`
             transform: ${props => props.left ? "rotate(-45deg)": (props.right ? "rotate(45deg)" : "rotate(-45deg)")};
         }
     }
+`;
+
+export const Limiter = styled.div`
+    position: absolute;
+    right: 15px;
+    bottom: 10px;
+    color: ${props => props.chars ? "white": "red"};
 `;
 
 export const LoginStyle = styled.div`

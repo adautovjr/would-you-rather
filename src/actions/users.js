@@ -16,6 +16,20 @@ export function receiveUsers (users) {
     }
 }
 
+export function updateUserWithQuestion ({ formattedQuestion, users }) {
+    const authedUser = formattedQuestion.author;
+    return {
+        type: UPDATE_USER_ANSWER,
+        users: {
+            ...users,
+            [authedUser]: {
+              ...users[authedUser],
+              questions: users[authedUser].questions.concat([formattedQuestion.id])
+            }
+          }
+    }
+}
+
 export function updateUserWithAnswer ({ authedUser, qid, answer, users }) {
     return {
         type: UPDATE_USER_ANSWER,
