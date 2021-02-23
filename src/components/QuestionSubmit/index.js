@@ -9,7 +9,7 @@ const QuestionSubmit = () => {
             <Grid container spacing={0}>
                 <CssBaseline />
                 <Grid xs={12} item>
-                    <Question row />
+                    <Question row builder />
                 </Grid>
             </Grid>
         </Container>

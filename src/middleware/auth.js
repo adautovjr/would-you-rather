@@ -15,15 +15,16 @@ const unprotectedRoutes = [
 const auth = (store) => (next) => (action) => {
     const authedUser = store.getState().authedUser;
     const userLoggedIn = typeof authedUser === typeof "";
+
     let returnValue = null;
-    if(!userLoggedIn){
-        if(actionsRequiringUserLoggedIn.includes(action.type)) {
+    if (!userLoggedIn) {
+        if (actionsRequiringUserLoggedIn.includes(action.type)) {
             switch (action.type) {
                 case LOCATION_CHANGE:
-                    if(!unprotectedRoutes.includes(action.payload.location.pathname)){
+                    if (!unprotectedRoutes.includes(action.payload.location.pathname)) {
                         console.error("Permission denied! Redirecting to login..");
                         setTimeout(() => {
-                            store.dispatch(push(`/login`));
+                            store.dispatch(push(`/login?redirectRoute=${action.payload.location.pathname}`));
                         }, 10);
                         return returnValue;
                     }

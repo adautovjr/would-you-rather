@@ -63,8 +63,10 @@ const Options = ({ authedUser, answer, row, column, builder, dispatch, questions
         dispatch(submitQuestion(info));
     };
 
-    const handleOptionClick = (option) => {
-        dispatch(vote({ authedUser, qid: answer.qid, answer: option, questions, users }));
+    const handleOptionClick = (option, isRow) => {
+        if (isRow){
+            dispatch(vote({ authedUser, qid: answer.qid, answer: option, questions, users }));
+        }
     }
 
     const transitionDuration = {
@@ -114,12 +116,12 @@ const Options = ({ authedUser, answer, row, column, builder, dispatch, questions
                                     </Option>
                                 </>
                                 : <>
-                                    <Option onClick={() => handleOptionClick("optionOne")} row={row || false} left>
+                                    <Option onClick={() => handleOptionClick("optionOne", row)} row={row || false} left>
                                         <div className="text">
                                             {answer.optionOne.text}
                                         </div>
                                     </Option>
-                                    <Option onClick={() => handleOptionClick("optionTwo")} row={row || false} right>
+                                    <Option onClick={() => handleOptionClick("optionTwo", row)} row={row || false} right>
                                         <div className="text">
                                             {answer.optionTwo.text}
                                         </div>

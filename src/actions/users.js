@@ -1,4 +1,5 @@
 export const RECEIVE_USERS = '@users/RECEIVE_USERS';
+export const UPDATE_USER_QUESTION = '@users/UPDATE_USER_ANSWER';
 export const UPDATE_USER_ANSWER = '@users/UPDATE_USER_ANSWER';
 export const SET_AUTHED_USER = '@users/SET_AUTHED_USER';
 
@@ -19,7 +20,7 @@ export function receiveUsers (users) {
 export function updateUserWithQuestion ({ formattedQuestion, users }) {
     const authedUser = formattedQuestion.author;
     return {
-        type: UPDATE_USER_ANSWER,
+        type: UPDATE_USER_QUESTION,
         users: {
             ...users,
             [authedUser]: {

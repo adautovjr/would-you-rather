@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
+import { useLocation } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import { Container, Grid, CssBaseline, Card, CardContent, FormControl, Select, InputLabel } from '@material-ui/core';
 import { LoginStyle } from "../Styles";
@@ -16,8 +17,13 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Login = ({ userIds, dispatch }) => {
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
+const Login = ({ dispatch }) => {
     const classes = useStyles();
+    let query = useQuery();
     const [state, setState] = React.useState({
         user: ''
     });
@@ -28,10 +34,9 @@ const Login = ({ userIds, dispatch }) => {
             ...state,
             [name]: event.target.value,
         });
-        console.log(event.target.value);
-        if(event.target.value !== "" && event.target.value !== undefined){
+        if (event.target.value !== "" && event.target.value !== undefined) {
             dispatch(logUserIn(event.target.value));
-            setTimeout(() => dispatch(push(`/`)), 200);
+            setTimeout(() => dispatch(push(query.get("redirectRoute") !== null ? query.get("redirectRoute") : `/`)), 200);
         }
     };
 
@@ -46,7 +51,7 @@ const Login = ({ userIds, dispatch }) => {
                                 <Grid container className="question">
                                     <Grid item xs={12}>
                                         <div className="login-logo">
-                                            Insira logo aqui
+                                            Insert logo here
                                         </div>
                                     </Grid>
                                     <Grid item xs={12}>
@@ -79,19 +84,4 @@ const Login = ({ userIds, dispatch }) => {
     );
 }
 
-function mapStateToProps({ users }) {
-    let mappedUsers = {};
-    Object.values(users).map(user => {
-        mappedUsers[user.id] = {
-            ...user,
-            score: (Object.keys(user.answers).length + user.questions.length)
-        };
-        return user;
-    });
-    return {
-        userIds: Object.keys(mappedUsers)
-            .sort((a, b) => mappedUsers[b].score - mappedUsers[a].score),
-    };
-}
-
-export default connect(mapStateToProps)(Login);
+export default connect()(Login);

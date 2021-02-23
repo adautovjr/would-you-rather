@@ -8,6 +8,7 @@ import QuestionDetails from "../QuestionDetails";
 import QuestionSubmit from "../QuestionSubmit";
 import Leaderboard from "../Leaderboard";
 import Login from "../Login";
+import NotFound from "../NotFound";
 import AppContainer from "../AppContainer";
 import { history } from '../../middleware';
 import { handleInitialData } from "../../actions/shared";
@@ -29,6 +30,7 @@ class App extends Component {
                             <Route path="/add" component={withRouter(QuestionSubmit)} />
                             <Route path="/leaderboard" component={withRouter(Leaderboard)} />
                             <Route path="/question/:id" component={withRouter(QuestionDetails)} />
+                            <Route component={NotFound} />
                         </Switch>
                     }
                 </AppContainer>
